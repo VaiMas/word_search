@@ -1,4 +1,7 @@
 import argparse
+import re
+from soundex import get_soundex
+import Levenshtein
 
 # parse command-line arguments
 parser = argparse.ArgumentParser(
@@ -11,6 +14,32 @@ parser.add_argument(
 )
 parser.add_argument(
     "phrase",
-    type=string,
     help="Search phrase.")
 args = parser.parse_args()
+
+
+def get_best_match(file_path, phrase):
+    """Search for words, soundex codes and levenshtein distance and
+    returns the top unique 5 matched words."""
+    with open(file_path, encoding='utf-8') as file:
+        text = file.read()
+    rx = re.compile('\W+')
+    res = rx.sub(' ', text).strip()
+    text = res.split(' ')
+    dict_soundex = {}
+    dict_levenshtein = {}
+    for word in text:
+        if word not in dict_soundex.keys():
+            if get_soundex(phrase)[0] == get_soundex(word)[0]:
+                value_soundex = get_soundex(word)
+                dict_soundex.update({word: value_soundex})
+                for key in dict_soundex.keys():
+                    value_levenshtein = Levenshtein.distance(phrase, key)
+                    dict_levenshtein.update({key: value_levenshtein})
+    dict_levenshtein = {k: v for k, v in sorted(dict_levenshtein.items(),
+                                                key=lambda item: item[1])}
+    print([key for key in dict_levenshtein.keys()][:5])
+
+
+if __name__ == '__main__':
+    get_best_match(args.file_path, args.phrase)
