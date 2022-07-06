@@ -40,7 +40,7 @@ def get_soundex(word):
     soundex += word[0]
 
     dictionary = {'BFPV': '1', 'CGJKQSXZ': '2', 'DT': '3', 'L': '4', 'MN': '5',
-                  'R': '6', 'AEIOUHWY': ''}
+                  'R': '6', 'AEIOUHWY': '.'}
 
     for letter in word[1:]:
         for key in dictionary.keys():
@@ -48,6 +48,9 @@ def get_soundex(word):
                 number = dictionary[key]
                 if number != soundex[-1]:
                     soundex += number
+    soundex = soundex.replace(".", "")
     soundex = soundex[:4].ljust(4, "0")
 
     return soundex
+
+print(get_soundex('logic'))
