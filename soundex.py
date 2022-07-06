@@ -37,17 +37,18 @@ def get_soundex(word):
     word = word.upper()
     letters = [char for char in word if char.isalpha()]
 
-    # Remove all occurrences of H, W.
-    letters_to_remove = ('H', 'W')
-
     # If query contains only 1 letter, return query+"000"
     if len(word) == 1:
         return word + "000"
+
+    # Remove all occurrences of H, W.
+    letters_to_remove = ('H', 'W')
 
     first_letter = letters[0]
     letters = letters[1:]
 
     letters = [char for char in letters if char not in letters_to_remove]
+
     if len(letters) == 0:
         return first_letter + "000"
 
@@ -93,5 +94,3 @@ def get_soundex(word):
 
     return string
 
-
-print(get_soundex('Ashcraft'))
