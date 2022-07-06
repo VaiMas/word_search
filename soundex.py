@@ -35,22 +35,63 @@ def get_soundex(word):
     """Get the soundex code for the string"""
 
     word = word.upper()
+    letters = [char for char in word if char.isalpha()]
 
-    soundex = ""
-    soundex += word[0]
+    # Remove all occurrences of H, W.
+    letters_to_remove = ('H', 'W')
 
-    dictionary = {'BFPV': '1', 'CGJKQSXZ': '2', 'DT': '3', 'L': '4', 'MN': '5',
-                  'R': '6', 'AEIOUHWY': '.'}
+    # If query contains only 1 letter, return query+"000"
+    if len(word) == 1:
+        return word + "000"
 
-    for letter in word[1:]:
-        for key in dictionary.keys():
-            if letter in key:
-                number = dictionary[key]
-                if number != soundex[-1]:
-                    soundex += number
-    soundex = soundex.replace(".", "")
-    soundex = soundex[:4].ljust(4, "0")
+    first_letter = letters[0]
+    letters = letters[1:]
 
-    return soundex
+    letters = [char for char in letters if char not in letters_to_remove]
+    if len(letters) == 0:
+        return first_letter + "000"
 
-print(get_soundex('logic'))
+    # Replace all consonants with digits according to rules
+    letters_to_replace = {('B', 'F', 'P', 'V'): 1, ('C', 'G', 'J', 'K', 'Q',
+                                                    'S', 'X', 'Z'): 2,
+                          ('D', 'T'): 3, ('L'): 4, ('M', 'N'): 5, ('R'): 6,
+                          ('A', 'E', 'I', 'O', 'U', 'Y', 'H', 'W'): 0}
+
+    first_letter = [value if first_letter else first_letter for group, value in
+                    letters_to_replace.items()
+                    if first_letter in group]
+    letters = [value if char else char
+               for char in letters
+               for group, value in letters_to_replace.items()
+               if char in group]
+
+    # Replace all adjacent same digits with one digit.
+    letters = [number for index, number in enumerate(letters)
+               if (index == len(letters) - 1 or (
+                index + 1 < len(letters) and number != letters[index + 1]))]
+
+    if first_letter[0] == letters[0]:
+        letters[0] = 0
+    else:
+        letters.insert(0, word[0])
+
+    first_letter = word[0]
+    letters = letters[1:]
+
+    # Remove all 0 from it.
+    letters = [number for number in letters if number != 0]
+
+    # Remove all except 3 digits after it.
+    letters = [char for char in letters if isinstance(char, int)][0:3]
+
+    # Append 3 zeros if result contains less than 3 digits.
+    while len(letters) < 3:
+        letters.append(0)
+
+    letters.insert(0, first_letter)
+    string = "".join([str(l) for l in letters])
+
+    return string
+
+
+print(get_soundex('Ashcraft'))
