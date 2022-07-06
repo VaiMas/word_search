@@ -9,23 +9,24 @@ parser = argparse.ArgumentParser(
     Returns the top unique 5 matched words."""
 )
 parser.add_argument(
-    "file_path",
-    help="Text file path.",
+    'file_path',
+    help='Text file path.',
 )
 parser.add_argument(
-    "phrase",
-    help="Search phrase.")
+    'phrase',
+    help='Search phrase.')
 args = parser.parse_args()
 
 
 def get_best_match(file_path, phrase):
     """Search for words, soundex codes and levenshtein distance and
     returns the top unique 5 matched words."""
-    with open(file_path, encoding='utf-8') as file:
+    with open(file_path, encoding='utf-8', ) as file:
         text = file.read()
-    rx = re.compile('\W+')
-    res = rx.sub(' ', text).strip()
+    rx = re.compile('[^A-Za-z ]+')
+    res = rx.sub(' ', text)
     text = res.split(' ')
+    text = filter(None, text)
     dict_soundex = {}
     dict_levenshtein = {}
     for word in text:
