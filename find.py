@@ -39,8 +39,10 @@ def get_best_match(file_path, phrase):
                     dict_levenshtein.update({key: value_levenshtein})
     dict_levenshtein = {k: v for k, v in sorted(dict_levenshtein.items(),
                                                 key=lambda item: item[1])}
-    return [key for key in dict_levenshtein.keys()][:5]
+    words =  [key for key in dict_levenshtein.keys()][:5]
+    for best_word in words:
+        print(best_word)
 
 
 if __name__ == '__main__':
-    print(get_best_match(args.file_path, args.phrase))
+    get_best_match(args.file_path, args.phrase)
