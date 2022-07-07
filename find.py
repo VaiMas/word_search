@@ -21,6 +21,9 @@ args = parser.parse_args()
 def get_best_match(file_path, phrase):
     """Search for words, soundex codes and levenshtein distance and
     returns the top unique 5 matched words."""
+
+    assert type(phrase) == str and len(phrase)>0 and phrase.isalpha(), \
+        'Please enter a word'
     with open(file_path, encoding='utf-8', ) as file:
         text = file.read()
     rx = re.compile('[^A-Za-z ]+')

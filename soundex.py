@@ -33,6 +33,8 @@ coded once as 'P'), and "Honeyman" yields "H555"."""
 
 def get_soundex(word):
     """Get the soundex code for the string"""
+    assert type(word) == str and len(word)>0 and word.isalpha(), \
+        'Please enter a word'
 
     word = word.upper()
     letters = [char for char in word if char.isalpha()]
